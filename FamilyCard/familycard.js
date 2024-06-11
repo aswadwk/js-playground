@@ -1200,6 +1200,18 @@ const input = [
 // Initialize output object
 const output = {
     no_kk: '',
+    address: '',
+    rtrw: '',
+    kelurahan: '',
+    kecamatan: '',
+    kabupaten: '',
+    province: '',
+    postal_code: '',
+    file_name: '',
+    file_path: '',
+    smart_scan_id: '',
+    contract_number: '',
+    cabang: '',
     table: [],
 };
 
@@ -1207,6 +1219,30 @@ const output = {
 input.forEach((item) => {
     if (item.label === 'no_kk') {
         output.no_kk = item.ocr_text.replace('No ', '');
+    }
+
+    if (item.label === 'alamat') {
+        output.address = item.ocr_text;
+    }
+
+    if (item.label === 'rt_rw') {
+        output.rtrw = item.ocr_text;
+    }
+
+    if (item.label === 'kelurahan') {
+        output.kelurahan = item.ocr_text;
+    }
+
+    if (item.label === 'kecamatan') {
+        output.kecamatan = item.ocr_text;
+    }
+
+    if (item.label === 'kabupaten') {
+        output.kabupaten = item.ocr_text;
+    }
+
+    if (item.label === 'provinsi') {
+        output.province = item.ocr_text;
     }
 });
 
@@ -1271,34 +1307,92 @@ input.forEach((item) => {
     }
 });
 
-// const nikArray = [];
-// const nameArray = [];
-// const genderArray = [];
-// const dobArray = [];
-// const pobArray = [];
-// const educationArray = [];
-// const jobArray = [];
-// const statusArray = [];
-// const relationArray = [];
-// const citiArray = [];
-// const religionArray = [];
-// const fatherArray = [];
-// const motherArray = [];
+const listArray = [nikArray, nameArray, genderArray, dobArray, pobArray, educationArray, jobArray, statusArray, relationArray, citiArray, religionArray, fatherArray, motherArray];
 
-console.log({
-    nikArray, nameArray, genderArray,
-    dobArray, pobArray, educationArray,
-    jobArray, statusArray, relationArray,
-    citiArray, religionArray, fatherArray, motherArray
+let maxLength = 0;
+let maxArray = [];
+
+
+// Find the maximum length of the arrays
+listArray.forEach((array) => {
+    if (array.length > maxLength) {
+        maxLength = array.length;
+        maxArray = array;
+    }
 });
 
-const maxLength = Math.max(nikArray.length, pobs.length);
+console.log({ maxLength });
 
-for (let i; maxLength; i++) {
+if (maxArray.length === 0) {
     output.table.push({
-        nik: nikArray,
+        KKNoGros: output.no_kk,
+        KKNo: output.no_kk,
+        Name: "",
+        NIKGros: "",
+        NIK: "",
+        Gender: "",
+        DateOfBirth: "",
+        PlaceOfBirth: "",
+        Religion: "",
+        Education: "",
+        Profession: "",
+        MaritalStatus: "",
+        RelationStatus: "",
+        Citizenship: "",
+        FatherName: "",
+        MotherName: "",
+        FatherOnFamilyCard: output.no_kk,
+        Address: output.address,
+        RTRW: output.rtrw,
+        Kelurahan: output.kelurahan,
+        Kecamatan: output.kecamatan,
+        Kabupaten: output.kabupaten,
+        Province: output.province,
+    })
+} else {
+    maxArray.forEach((item) => {
+        const nik = nikArray.find((n) => n.row === item.row);
+        const name = nameArray.find((n) => n.row === item.row);
+        const gender = genderArray.find((g) => g.row === item.row);
+        const dob = dobArray.find((d) => d.row === item.row);
+        const pod = pobArray.find((p) => p.row === item.row);
+        const religion = religionArray.find((r) => r.row === item.row);
+        const education = educationArray.find((e) => e.row === item.row);
+        const job = jobArray.find((j) => j.row === item.row);
+        const status = statusArray.find((s) => s.row === item.row);
+        const relation = relationArray.find((r) => r.row === item.row);
+        const citizenship = citiArray.find((c) => c.row === item.row);
+        const father = fatherArray.find((f) => f.row === item.row);
+        const mother = motherArray.find((m) => m.row === item.row);
+
+        output.table.push({
+            KKNoGros: output.no_kk,
+            KKNo: output.no_kk,
+            Name: name ? name.value : '',
+            NIKGros: nik ? nik.value : '',
+            NIK: nik ? nik.value : '',
+            Gender: gender ? gender.value : '',
+            DateOfBirth: dob ? dob.value : '',
+            PlaceOfBirth: pod ? pod.value : '',
+            Religion: religion ? religion.value : '',
+            Education: education ? education.value : '',
+            Profession: job ? job.value : '',
+            MaritalStatus: status ? status.value : '',
+            RelationStatus: relation ? relation.value : '',
+            Citizenship: citizenship ? citizenship.value : '',
+            FatherName: father ? father.value : '',
+            MotherName: mother ? mother.value : '',
+            FatherOnFamilyCard: output.no_kk,
+            Address: output.address,
+            RTRW: output.rtrw,
+            Kelurahan: output.kelurahan,
+            Kecamatan: output.kecamatan,
+            Kabupaten: output.kabupaten,
+            Province: output.province,
+        })
     });
 }
+
 
 // Combine NIK, nama_lengkap, and status_perkawinan into table array
 // nikArray.forEach((nik, index) => {
@@ -1314,7 +1408,7 @@ for (let i; maxLength; i++) {
 // });
 
 // Convert output object to array
-const result = [output];
+const result = output;
 
 // Log the result
 console.log(result);
